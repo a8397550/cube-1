@@ -596,7 +596,7 @@ function processMerge(cube, files, rootFiles) {
     if (file.requires) {
       file.requires = file.requires.filter((req) => {
         if (mergedFile[req]) {
-          return false
+          return false;
         }
         return true;
       });
@@ -881,12 +881,24 @@ function allInOneCode(cube, options, callback) {
   let concurrent = options.concurrent || 10;
 
   function prepare(options) {
+    var makeType = 'script';
+    var ext = '.js';
+    var targetExt = '.js';
+
+    if ((/\.(less|css|sass|scss)$/).test(options.queryPath)) {
+      makeType = 'style';
+      if (/\.(less)$/.test(options.queryPath)) {
+        ext = '.less';
+        targetExt = '.less';
+      }
+    }
+
     return {
       queryPath: options.queryPath,
       realPath: options.queryPath,
-      type: 'script',
-      ext: '.js',
-      targetExt: '.js',
+      type: makeType,
+      ext: ext,
+      targetExt: targetExt,
       code: options.code || null,
       codeWraped: null,
       source: options.code || '',
@@ -974,7 +986,7 @@ function allInOneCode(cube, options, callback) {
     process.nextTick(() => {
       processArr(requires, done);
     });
-  };
+  }
   processArr([prepare(options)], done);
 }
 
